@@ -12,16 +12,7 @@ function App() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedMovie, setSelectedMovie] = useState<Movie>({
-    id: 0,
-    poster_path: "",
-    backdrop_path: "",
-    title: "",
-    overview: "",
-    release_date: "",
-    vote_average: 0,
-  });
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   const handleSearch = async (query: string): Promise<void> => {
     try {
@@ -46,23 +37,12 @@ function App() {
     }
   };
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedMovie({
-      id: 0,
-      poster_path: "",
-      backdrop_path: "",
-      title: "",
-      overview: "",
-      release_date: "",
-      vote_average: 0,
-    });
-  };
-
   const handleClick = (movie: Movie): void => {
     setSelectedMovie(movie);
-    openModal();
+  };
+
+  const closeModal = () => {
+    setSelectedMovie(null);
   };
 
   return (
@@ -74,7 +54,9 @@ function App() {
       {movies.length > 0 && (
         <MovieGrid onSelect={handleClick} movies={movies} />
       )}
-      {isModalOpen && <MovieModal movie={selectedMovie} onClose={closeModal} />}
+      {selectedMovie && (
+        <MovieModal movie={selectedMovie} onClose={closeModal} />
+      )}
     </>
   );
 }
